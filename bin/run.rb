@@ -1,4 +1,29 @@
 require_relative '../config/environment'
+require 'rest-client'
+require 'json'
+
+ING_KEYS = ["strIngredient1",
+"strIngredient2",
+"strIngredient3",
+"strIngredient4",
+"strIngredient5",
+"strIngredient6",
+"strIngredient7",
+"strIngredient8",
+"strIngredient9",
+"strIngredient10",
+"strIngredient11",
+"strIngredient12",
+"strIngredient13",
+"strIngredient14",
+"strIngredient15"]
+
+def api_return(drink)
+    response_string = RestClient.get("https://www.thecocktaildb.com/api/json/v1/1/search.php?s=#{drink}")
+    response_hash = JSON.parse(response_string)
+    drink_object = response_hash["drinks"]
+    drink_object
+end
 
 
 
@@ -17,9 +42,12 @@ def welcome_menu
         system("clear")
         puts "Please sign up"
         create_user
+        returned_drinks
     elsif login_answer == "Log-in"
         system("clear")
         puts "please log in"
+        log_in
+        returned_drinks
     else 
         login_answer == "Back"
         intro
@@ -33,13 +61,75 @@ def create_user
     age = prompt.ask("please enter your age")
     money = prompt.ask("How much would you like to add to your account?")
 
-    user = User.create(name: "#{name.upcase!}", age: "#{age}", money: "#{money}")
+    $user = User.create(name: "#{name.upcase!}", age: "#{age}", money: "#{money}")
 end 
 
-def log_in 
-    
-
+def log_in
+    prompt = TTY::Prompt.new
+    user_full = prompt.ask("What is your full name?")
+    test = User.all.find do |user|
+        user.name == user_full.upcase!
+        
+    end 
 end
 
-intro 
+def returned_drinks
+    prompt = TTY::Prompt.new
+    selected_drink = prompt.ask("What kind of drink are you looking for")
+    choices = []
+    drinks = api_return(selected_drink)
+    drinks.each do |drink_hash|
+        choices << drink_hash["strDrink"]
+    end
+    drink_answer = prompt.select("Please select a drink...", choices)
+    drink_options(drink_answer, drinks)
+end 
 
+def drink_options(drink, drinks)
+    system("clear")
+    prompt = TTY::Prompt.new
+    choices = ["Ingredients", "Hows it made", "Purchase", "Back"]
+    drink_answer = prompt.select("Please select a choice: ", choices)
+    if drink_answer == choices[0]
+        system("clear")
+        puts "Here are the ingredients..."
+        get_ingridients(drink_name, drinks)
+    elsif drink_answer == choices[1]
+        system("clear")
+        puts "Heses how its made:"
+        get_instructions(drink)
+
+    elsif drink_answer == choices[2]
+        system("clear")
+        puts "purchase"
+    else 
+        drink_answer == "Back"
+        system("clear")
+        returned_drinks
+    end 
+end 
+
+def get_instructions(returned_drinks)
+    prompt = TTY::Prompt.new
+    drink_inst = api_return(returned_drinks).find do |drink_object|
+    puts drink_object["strInstructions"]
+    end 
+    choices = ["Back"]
+    back_button = prompt.select(drink_inst, choices)
+    if back_button == "Back"
+        drink_options(returned_drinks)
+    end
+end
+
+def get_ingridients(drink_name, drinks)
+    found_drink = drinks.find do |drink|
+        drink["strDrink"] == drink_name
+    end 
+    ing = ING_KEYS.map do |key|
+            found_drink[key]
+    end.uniq
+   puts ing
+end
+
+
+intro
