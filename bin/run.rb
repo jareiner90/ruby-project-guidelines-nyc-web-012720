@@ -110,6 +110,7 @@ def drink_options(drink) # def drink_options(drink, drinks)
     elsif drink_answer == choices[2]
         system("clear")
         puts "purchase"
+        purchase
     else 
         drink_answer == "Back"
         system("clear")
@@ -144,5 +145,11 @@ def get_ingridients(drink_name)
     end
 end
 
+def purchase
+    # puts $drink_answer
+end 
+
+
 
 intro
+binding.pry
