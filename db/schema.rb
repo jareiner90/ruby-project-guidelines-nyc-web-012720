@@ -19,8 +19,8 @@ ActiveRecord::Schema.define(version: 20200211145256) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.integer "user"
-    t.integer "drink"
+    t.integer "user_id"
+    t.integer "drink_id"
     t.integer "total"
   end
 
