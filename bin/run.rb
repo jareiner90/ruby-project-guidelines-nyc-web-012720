@@ -49,13 +49,12 @@ def game_loop
                     puts "Here are the ingredients..."
                     get_ingridients(drink_answer)
                     gets.chomp
-                    drink_answer
+                    search_option
                 elsif search_option == "Hows it made"
                     puts "Heses how its made:"
                     get_instructions(drink_answer)
                 elsif search_option == "Purchase"
                     add_drink(drink_answer)
-                    # new_drink = Drink.new(drink_answer, "some string", 7)
                 else search_option == "Back"
                     returned_drinks
                 end
@@ -81,6 +80,8 @@ end
 intro
 create_login_user
 game_loop
+
+
 
             #  if login_answer == 'Exit'
     #     break 

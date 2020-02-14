@@ -58,17 +58,10 @@ def intro
     gets.chomp
 end 
 
-def create_login_user #(login_answer)
+def create_login_user 
     prompt = TTY::Prompt.new
-    # if login_answer == "Sign up"
         name = prompt.ask("Please enter your full name")
-        # age = prompt.ask("please enter your age")
-        # money = prompt.ask("How much would you like to add to your account?")
-        $user = User.find_or_create_by(name: "#{name.upcase!}") #, age: "#{age}", money: "#{money}")
-    # elsif login_answer == "Log-in"
-    #     user_full = prompt.ask("What is your full name?")
-    #     user = User.find_or_create_by(name: "#{user_full.upcase!}")
-    # end
+        $user = User.find_or_create_by(name: "#{name.upcase!}")
 end
 
 # continues the program
@@ -111,30 +104,10 @@ def returned_drinks
     drink_answer = prompt.select("Please select a drink...", choices)
 end 
 
-def drink_options(drink) # def drink_options(drink, drinks)
-    # system("clear")
+def drink_options(drink) 
     prompt = TTY::Prompt.new
     choices = ["Ingredients", "Hows it made", "Purchase", "Back"]
     drink_answer = prompt.select("Please select a choice: ", choices)
-    # if drink_answer == choices[0]
-    #     system("clear")
-    #     puts "Here are the ingredients..."
-    #     get_ingridients(drink) # get_ingridients(drink_name, drinks)
-    # elsif drink_answer == choices[1]
-    #     system("clear")
-    #     puts "Heses how its made:"
-    #     get_instructions(drink) 
-        
-
-    # elsif drink_answer == choices[2]
-    #     system("clear")
-    #     puts "purchase"
-    #     purchase($drink_answer, ingredients_to_string($ing), 7)
-    # else 
-    #     drink_answer == "Back"
-    #     system("clear")
-    #     returned_drinks
-    # end 
 end 
 
 def get_instructions(returned_drinks)
@@ -157,11 +130,6 @@ def get_ingridients(drink_name)
             
     end.uniq
     puts $ing
-    # choices = ["Back"]
-    # back_button = prompt.select("", choices)
-    # if back_button == "Back"
-    #     drink_options(drink_name)
-    # end
 end
 
 def ingredients_to_string(array)
@@ -177,20 +145,17 @@ def add_drink(drink_name)
     end.uniq
     ing_drink = $ing.join(",")
 
-    new_drink = Drink.create(name: drink_name,ingridents: ing_drink,price: 7)
+    new_drink = Drink.create(name: drink_name,ingridents: ing_drink)
     
     current_user = User.all.find do |user| 
         user.name == $user.name
     end 
-    new_order = Order.create(user: current_user, drink: new_drink, total: 7)
+    new_order = Order.create(user: current_user, drink: new_drink)
    
 end 
 
 def orders
     prompt = TTY::Prompt.new
-    # all_orders = Order.all.select do |order| 
-    #     order.user_id == $user.id
-    # end
     drink_names = $user.orders.map do |order| 
         order.drink.name
     end 
@@ -206,7 +171,6 @@ end
 
 def delete(drink_name)
     user_drink = $user.orders.find{|order| order.drink.name == drink_name}.destroy
-    #user_drink[0].destroy_by(name: drink_name)
 end
 
 def update(drink_name)
@@ -219,7 +183,7 @@ def update(drink_name)
     ing_to_change = prompt.select("What ingridient would you like to change", choices)
     index_of_choices = choices.index(ing_to_change) #2
 
-    whateverthefuck = prompt.ask("What would you like to change the ing to?")
+    whateverthefuck = prompt.ask("What would you like to change the ingridient to?")
 
     choices[index_of_choices] = whateverthefuck
     new_string = choices.join(',')
